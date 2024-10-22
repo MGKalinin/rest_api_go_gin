@@ -35,6 +35,20 @@ func postAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, newAlbum)
 }
 
+// getAlbumByID получение альбома по иденификатору
+func getAlbumByID(c *gin.Context) {
+	id := c.Param("id")
+
+	// Поиск идентификатора по срезу альбомов
+	for _, a := range albums {
+		if a.ID == id {
+			c.IndentedJSON(http.StatusOK, a)
+			return
+		}
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+}
+
 // getAlbums отправляет список альбомов как JSON.
 func getAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, albums)
@@ -43,8 +57,7 @@ func main() {
 	router := gin.Default()
 	router.GET("/albums", getAlbums) // getAlbums()- это () передача результата функции
 	router.POST("/albums", postAlbums)
+	router.GET("/albums/:id", getAlbumByID)
 
 	router.Run("localhost:8080")
 }
-
-// Write a handler to return a specific item.....
